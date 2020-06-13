@@ -1,0 +1,325 @@
+class Vector3 {
+    /* Fields */
+    field Float x;
+    field Float y;
+    field Float z;
+
+    /* Global variables */
+    static Vector3 ZERO_VEC;
+    static Vector3 X_VEC;
+    static Vector3 Y_VEC;
+    static Vector3 Z_VEC;
+    static Vector3 temp;
+
+    /* Used for operations */
+    static Float tempAddSub;
+    static Float tempMultDiv;
+
+    /*
+     * Initializes this class. Call it before using any method of the class.
+     */
+    function void init() {
+        let ZERO_VEC = Vector3.new();
+        let X_VEC = Vector3.new();
+        let Y_VEC = Vector3.new();
+        let Z_VEC = Vector3.new();
+        let temp = Vector3.new();
+        do X_VEC.setInt(1, 0, 0);
+        do Y_VEC.setInt(0, 1, 0);
+        do Z_VEC.setInt(0, 0, 1);
+        let tempAddSub = Float.new();
+        let tempMultDiv = Float.new();
+        return;
+    }
+
+    /*
+     * Creates a new vector with default value to (0, 0, 0).
+     */
+    constructor Vector3 new() {
+        let x = Float.new();
+        let y = Float.new();
+        let z = Float.new();
+        return this;
+    }
+
+    /*
+     * Returns the X field of this vector. It can be assigned.
+     */
+    method Float getX() {
+        return x;
+    }
+
+    /*
+     * Returns the Y field of this vector. It can be assigned.
+     */
+    method Float getY() {
+        return y;
+    }
+
+    /*
+     * Returns the Z field of this vector. It can be assigned.
+     */
+    method Float getZ() {
+        return z;
+    }
+
+    /*
+     * Sets this vector to the values: (xx / w, yy / w, zz / w).
+     */
+    method Vector3 setIntW(int xx, int yy, int zz, int w) {
+        do x.setInt(xx);
+        do x.divInt(w);
+
+        do y.setInt(yy);
+        do y.divInt(w);
+
+        do z.setInt(zz);
+        do z.divInt(w);
+
+        return this;
+    }
+
+    /*
+     * Sets this vector to the values: (xx / w, yy / w, zz / w).
+     */
+    method Vector3 setFloatW(Float xx, Float yy, Float zz, Float w) {
+        do x.set(xx);
+        do x.div(w);
+
+        do y.set(yy);
+        do y.div(w);
+
+        do z.set(zz);
+        do z.div(w);
+
+        return this;
+    }
+    
+    /*
+     * Sets this vector to the values: (xx, yy, zz).
+     */
+    method Vector3 setInt(int xx, int yy, int zz) {
+        do x.setInt(xx);
+        do y.setInt(yy);
+        do z.setInt(zz);
+        return this;
+    }
+
+    /*
+     * Sets this vector to the values (xx, yy, zz).
+     */
+    method Vector3 setFloat(Float xx, Float yy, Float zz) {
+        do x.set(xx);
+        do y.set(yy);
+        do z.set(zz);
+        return this;
+    }
+
+    /*
+     * Copies other vector to this vector.
+     */
+    method Vector3 set(Vector3 other) {
+        return setFloat(other.getX(), other.getY(), other.getZ());
+    }
+
+    /*
+     * Calculates the dot product between two vectors.
+     * WARNING: Global variable returned.
+     */
+    function Float dot(Vector3 a, Vector3 b) {
+        do tempMultDiv.set(a.getX());
+        do tempMultDiv.mult(b.getX());
+        do tempAddSub.set(tempMultDiv);
+
+        do tempMultDiv.set(a.getY());
+        do tempMultDiv.mult(b.getY());
+        do tempAddSub.add(tempMultDiv);
+
+        do tempMultDiv.set(a.getZ());
+        do tempMultDiv.mult(b.getZ());
+        do tempAddSub.add(tempMultDiv);
+
+        return tempAddSub;
+    }
+
+    /*
+     * Returns the magnitude of this vector.
+     * WARNING: Global variable returned.
+     */
+    method Float magnitude() {
+        var Float res;
+        let res = Vector3.dot(this, this);
+        return res.sqrt();
+    }
+
+    /*
+     * Normalizes this vector and returns itself.
+     */
+    method Vector3 normalize() {
+        var Float mag;
+        let mag = magnitude();
+        do x.div(mag);
+        do y.div(mag);
+        do z.div(mag);
+        return this;
+    }
+
+    /*
+     * Adds a vector p to this vector and returns itself.
+     */
+    method Vector3 add(Vector3 p) {
+        do x.add(p.getX());
+        do y.add(p.getY());
+        do z.add(p.getZ());
+        return this;
+    }
+
+    /*
+     * Multiplies this vector with an int n and returns itself.
+     */
+    method Vector3 multiplyInt(int n) {
+        do y.multInt(n);
+        do x.multInt(n);
+        do z.multInt(n);
+        return this;
+    }
+
+    /*
+     * Multiplies this vector with a Float n and returns itself.
+     */
+    method Vector3 multiply(Float n) {
+        do y.mult(n);
+        do x.mult(n);
+        do z.mult(n);
+        return this;
+    }
+
+    /*
+     * Calculates the cross product of two vectors and returns the result.
+     * WARNING: Global variable returned.
+     */
+    function Vector3 cross(Vector3 a, Vector3 b) {
+        var Float tempX, tempY, tempZ;
+
+        let tempX = temp.getX();
+        let tempY = temp.getY();
+        let tempZ = temp.getZ();
+
+        /* x = a.y * b.z - a.z * b.y */
+        do tempMultDiv.set(a.getY());
+        do tempMultDiv.mult(b.getZ());
+        do tempX.set(tempMultDiv);
+        do tempMultDiv.set(a.getZ());
+        do tempMultDiv.mult(b.getY());
+        do tempX.sub(tempMultDiv);
+
+        /* y = a.z * b.x - a.x * b.z */
+        do tempMultDiv.set(a.getZ());
+        do tempMultDiv.mult(b.getX());
+        do tempY.set(tempMultDiv);
+        do tempMultDiv.set(a.getX());
+        do tempMultDiv.mult(b.getZ());
+        do tempY.sub(tempMultDiv);
+        
+        /* z = a.x * b.y - a.y * b.x */
+        do tempMultDiv.set(a.getX());
+        do tempMultDiv.mult(b.getY());
+        do tempZ.set(tempMultDiv);
+        do tempMultDiv.set(a.getY());
+        do tempMultDiv.mult(b.getX());
+        do tempZ.sub(tempMultDiv);
+
+        return temp;
+    }
+
+    /*
+     * Returns the vector (0, 0, 0).
+     * WARNING: Global variable returned.
+     */
+    function Vector3 zeroVec() {
+        return ZERO_VEC;
+    }
+
+    /*
+     * Returns the vector (1, 0, 0).
+     * WARNING: Global variable returned.
+     */
+    function Vector3 xVec() {
+        return X_VEC;
+    }
+
+    /*
+     * Returns the vector (0, 1, 0).
+     * WARNING: Global variable returned.
+     */
+    function Vector3 yVec() {
+        return Y_VEC;
+    }
+
+    /*
+     * Returns the vector (0, 0, 1).
+     * WARNING: Global variable returned.
+     */
+    function Vector3 zVec() {
+        return Z_VEC;
+    }
+
+    /*
+     * Returns a string with a representation of this vector (x,y,z).
+     */
+    method String toString() {
+        var String str, sTemp;
+        var int i;
+
+        let str = String.new(46); /* 14 * 3 + 2 + 2*/
+        let sTemp = x.toString(4);
+
+        do str.appendChar(40); /* ( */
+
+        let i = 0;
+        while(i < sTemp.length()) {
+            do str.appendChar(sTemp.charAt(i));
+            let i = i + 1;
+        }
+
+        do sTemp.dispose();
+        do str.appendChar(44); /* , */
+
+        let sTemp = y.toString(2);
+
+        let i = 0;
+        while(i < sTemp.length()) {
+            do str.appendChar(sTemp.charAt(i));
+            let i = i + 1;
+        }
+
+        do sTemp.dispose();
+        do str.appendChar(44); /* , */
+
+
+        let sTemp = z.toString(2);
+
+        let i = 0;
+        while(i < sTemp.length()) {
+            do str.appendChar(sTemp.charAt(i));
+            let i = i + 1;
+        }
+
+        do sTemp.dispose();
+
+        do str.appendChar(41); /* ) */
+
+        return str;
+    }
+
+    /*
+     * Prints this vector.
+     */
+    method void print() {
+        var String s;
+        let s = toString();
+        do Output.printString(s);
+        do s.dispose();
+        return;
+    }
+}
