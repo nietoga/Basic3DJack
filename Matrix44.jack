@@ -500,6 +500,8 @@ class Matrix44 {
      * WARNING: Global variable returned.
      */
     function Matrix44 lookAt(Vector3 from, Vector3 to, Vector3 orientation) {
+        var Float refFloat;
+
         do tempVec.copy(to);
         do tempVec.neg();
 
@@ -526,17 +528,17 @@ class Matrix44 {
         do resultMat.set(2, 1, n.getY());
         do resultMat.set(2, 2, n.getZ());
 
-        do tempVec.copy(Vector3.dot(u, from));
-        do tempVec.neg();
-        do resultMat.set(3, 0, tempVec);
+        let refFloat = Vector3.dot(u, from);
+        do refFloat.neg();
+        do resultMat.set(3, 0, refFloat);
 
-        do tempVec.copy(Vector3.dot(v, from));
-        do tempVec.neg();
-        do resultMat.set(3, 1, tempVec);
+        let refFloat = Vector3.dot(v, from);
+        do refFloat.neg();
+        do resultMat.set(3, 1, refFloat);
 
-        do tempVec.copy(Vector3.dot(n, from));
-        do tempVec.neg();
-        do resultMat.set(3, 2, tempVec);
+        let refFloat = Vector3.dot(n, from);
+        do refFloat.neg();
+        do resultMat.set(3, 2, refFloat);
 
         return resultMat;
     }
