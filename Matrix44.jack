@@ -12,13 +12,14 @@ class Matrix44 {
     static Matrix44 resultMat;
 
     /* Used for operations. */
-    static Float tempAddSub;
     static Float tempMultDiv;
     static Float tempRads;
+
     static Float tempX;
     static Float tempY;
     static Float tempZ;
     static Float tempW;
+
     static Vector3 tempVec;
     static Vector3 n;
     static Vector3 u;
@@ -34,15 +35,19 @@ class Matrix44 {
         do IDENTITY_MAT.setInt(1, 1, 1);
         do IDENTITY_MAT.setInt(2, 2, 1);
         do IDENTITY_MAT.setInt(3, 3, 1);
+
         let resultVec = Vector3.new();
         let resultMat = Matrix44.new();
 
-        let tempAddSub = Float.new();
         let tempMultDiv = Float.new();
+        let tempRads = Float.new();
+
         let tempX = Float.new();
         let tempY = Float.new();
         let tempZ = Float.new();
         let tempW = Float.new();
+
+        let tempVec = Vector3.new();
         let n = Vector3.new();
         let u = Vector3.new();
         let v = Vector3.new();
@@ -132,12 +137,14 @@ class Matrix44 {
      */
     method Matrix44 add(Matrix44 m) {
         var int i, j;
+        var Float refFloat;
 
         let i = 0;
         while(i < 4) {
             let j = 0;
             while(j < 4) {
-                do set(i, j, m.get(i, j));
+                let refFloat = get(i, j);
+                do refFloat.add(m.get(i, j));
                 let j = j + 1;
             }
 
@@ -293,6 +300,7 @@ class Matrix44 {
 
     /*
      * Translation matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 translateInt(int dx, int dy, int dz) {
         do resultMat.copy(Matrix44.identity());
@@ -304,6 +312,7 @@ class Matrix44 {
 
     /*
      * Translation matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 translate(Float dx, Float dy, Float dz) {
         do resultMat.copy(Matrix44.identity());
@@ -315,6 +324,7 @@ class Matrix44 {
 
     /*
      * Scaling matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 scaleInt(int sx, int sy, int sz) {
         do resultMat.copy(Matrix44.identity());
@@ -326,6 +336,7 @@ class Matrix44 {
 
     /*
      * Scaling matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 scale(Float sx, Float sy, Float sz) {
         do resultMat.copy(Matrix44.identity());
@@ -337,6 +348,7 @@ class Matrix44 {
 
     /*
      * Rotation matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 rotateX(Float dtheta) {
         var Float refFloat;
@@ -355,6 +367,7 @@ class Matrix44 {
 
     /*
      * Rotation matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 rotateXDegrees(int dtheta) {
         var Float refFloat;
@@ -370,6 +383,7 @@ class Matrix44 {
 
     /*
      * Rotation matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 rotateY(Float dtheta) {
         var Float refFloat;
@@ -388,6 +402,7 @@ class Matrix44 {
 
     /*
      * Rotation matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 rotateYDegrees(int dtheta) {
         var Float refFloat;
@@ -406,6 +421,7 @@ class Matrix44 {
 
     /*
      * Rotation matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 rotateZ(Float dtheta) {
         var Float refFloat;
@@ -424,6 +440,7 @@ class Matrix44 {
 
     /*
      * Rotation matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 rotateZDegrees(int dtheta) {
         var Float refFloat;
@@ -442,6 +459,7 @@ class Matrix44 {
 
     /*
      * Perspective matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 perspectiveInt(int d) {
         var Float refFloat;
@@ -458,6 +476,7 @@ class Matrix44 {
 
     /*
      * Perspective matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 perspective(Float d) {
         var Float refFloat;
@@ -474,6 +493,7 @@ class Matrix44 {
 
     /*
      * Look at matrix.
+     * WARNING: Global variable returned.
      */
     function Matrix44 lookAt(Vector3 from, Vector3 to, Vector3 orientation) {
         do tempVec.copy(to);
