@@ -51,6 +51,9 @@ class Main
 		do mat1.print();
 		do Output.println();
 
+		do mat2.multInt(2);
+		do mat2.print();
+		do Output.println();
 		return;
 	}
 }
