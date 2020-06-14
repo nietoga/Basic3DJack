@@ -1,0 +1,18 @@
+/*
+ * Util class.
+ */
+class Util {
+    /*
+     * Appends string b to string a.
+     */
+    function void appendString(String a, String b) {
+        var int i, blength;
+        let i = 0;
+        let blength = b.length();
+        while(i < blength) {
+            do a.appendChar(b.charAt(i));
+            let i = i + 1;
+        }
+        return;
+    }
+}

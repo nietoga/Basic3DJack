@@ -15,6 +15,14 @@ class Matrix44 {
     static Float tempAddSub;
     static Float tempMultDiv;
     static Float tempRads;
+    static Float tempX;
+    static Float tempY;
+    static Float tempZ;
+    static Float tempW;
+    static Vector3 tempVec;
+    static Vector3 n;
+    static Vector3 u;
+    static Vector3 v;
 
     /*
      * Initializes this class.
@@ -22,12 +30,22 @@ class Matrix44 {
     function void init() {
         let ZERO_MAT = Matrix44.new();
         let IDENTITY_MAT = Matrix44.new();
-        do IDENTITY_MAT.get(0, 0).setInt(1);
-        do IDENTITY_MAT.get(1, 1).setInt(1);
-        do IDENTITY_MAT.get(2, 2).setInt(1);
-        do IDENTITY_MAT.get(3, 3).setInt(1);
+        do IDENTITY_MAT.setInt(0, 0, 1);
+        do IDENTITY_MAT.setInt(1, 1, 1);
+        do IDENTITY_MAT.setInt(2, 2, 1);
+        do IDENTITY_MAT.setInt(3, 3, 1);
         let resultVec = Vector3.new();
         let resultMat = Matrix44.new();
+
+        let tempAddSub = Float.new();
+        let tempMultDiv = Float.new();
+        let tempX = Float.new();
+        let tempY = Float.new();
+        let tempZ = Float.new();
+        let tempW = Float.new();
+        let n = Vector3.new();
+        let u = Vector3.new();
+        let v = Vector3.new();
         return;
     }
 
@@ -57,7 +75,7 @@ class Matrix44 {
         while(i < 4) {
             let j = 0;
             while(j < 4) {
-                do get(i, j).set(m.get(i, j));
+                do set(i, j, m.get(i, j));
                 let j = j + 1;
             }
 
@@ -73,6 +91,26 @@ class Matrix44 {
      */
     method Float get(int i, int j) {
         return matrix[(i * 4) + j];
+    }
+
+    /*
+     * Set matrix[i][j] = val and returns itself.
+     */
+    method Matrix44 setInt(int i, int j, int val) {
+        var Float refFloat;
+        let refFloat = get(i, j);
+        do refFloat.setInt(val);
+        return this;
+    }
+
+    /*
+     * Set matrix[i][j] = val and returns itself.
+     */
+    method Matrix44 set(int i, int j, Float val) {
+        var Float refFloat;
+        let refFloat = get(i, j);
+        do refFloat.set(val);
+        return this;
     }
 
     /*
@@ -99,7 +137,7 @@ class Matrix44 {
         while(i < 4) {
             let j = 0;
             while(j < 4) {
-                do get(i, j).add(m.get(i, j));
+                do set(i, j, m.get(i, j));
                 let j = j + 1;
             }
 
@@ -115,39 +153,95 @@ class Matrix44 {
      * WARNING: Global variable returned.
      */
     function Vector3 times(Matrix44 m, Vector3 p) {
+        /* x = matrix[0][0] * p.x + matrix[0][1] * p.y + matrix[0][2] * p.z + matrix[0][3] */
         do tempMultDiv.set(m.get(0, 0));
         do tempMultDiv.mult(p.getX());
-        do tempAddSub.set(tempMultDiv);
+        do tempX.set(tempMultDiv);
+
         do tempMultDiv.set(m.get(0, 1));
-        do tempMultDiv.mult(p.getX());
-        do tempAddSub.add(tempMultDiv);
+        do tempMultDiv.mult(p.getY());
+        do tempX.add(tempMultDiv);
+
         do tempMultDiv.set(m.get(0, 2));
-        do tempMultDiv.mult(p.getX());
-        do tempAddSub.add(tempMultDiv);
-        do tempMultDiv.set(m.get(0, 3));
-        do tempMultDiv.mult(p.getX());
-        do tempAddSub.add(tempMultDiv);
+        do tempMultDiv.mult(p.getZ());
+        do tempX.add(tempMultDiv);
 
-        x = matrix[0][0] * p.x + matrix[0][1] * p.y + matrix[0][2] * p.z + matrix[0][3];
-        double y = matrix[1][0] * p.x + matrix[1][1] * p.y + matrix[1][2] * p.z + matrix[1][3];
-        double z = matrix[2][0] * p.x + matrix[2][1] * p.y + matrix[2][2] * p.z + matrix[2][3];
-        double w = matrix[3][0] * p.x + matrix[3][1] * p.y + matrix[3][2] * p.z + matrix[3][3];
+        do tempX.add(m.get(0, 3));
 
-        return new Vector3(x, y, z, w);
+        /* y = matrix[1][0] * p.x + matrix[1][1] * p.y + matrix[1][2] * p.z + matrix[1][3] */
+        do tempMultDiv.set(m.get(1, 0));
+        do tempMultDiv.mult(p.getX());
+        do tempY.set(tempMultDiv);
+
+        do tempMultDiv.set(m.get(1, 1));
+        do tempMultDiv.mult(p.getY());
+        do tempY.add(tempMultDiv);
+
+        do tempMultDiv.set(m.get(1, 2));
+        do tempMultDiv.mult(p.getZ());
+        do tempY.add(tempMultDiv);
+
+        do tempY.add(m.get(1, 3));
+
+        /* z = matrix[2][0] * p.x + matrix[2][1] * p.y + matrix[2][2] * p.z + matrix[2][3] */
+        do tempMultDiv.set(m.get(2, 0));
+        do tempMultDiv.mult(p.getX());
+        do tempZ.set(tempMultDiv);
+
+        do tempMultDiv.set(m.get(2, 1));
+        do tempMultDiv.mult(p.getY());
+        do tempZ.add(tempMultDiv);
+
+        do tempMultDiv.set(m.get(2, 2));
+        do tempMultDiv.mult(p.getZ());
+        do tempZ.add(tempMultDiv);
+
+        do tempZ.add(m.get(2, 3));
+
+        /* w = matrix[3][0] * p.x + matrix[3][1] * p.y + matrix[3][2] * p.z + matrix[3][3] */
+        do tempMultDiv.set(m.get(3, 0));
+        do tempMultDiv.mult(p.getX());
+        do tempW.set(tempMultDiv);
+
+        do tempMultDiv.set(m.get(3, 1));
+        do tempMultDiv.mult(p.getY());
+        do tempW.add(tempMultDiv);
+
+        do tempMultDiv.set(m.get(3, 2));
+        do tempMultDiv.mult(p.getZ());
+        do tempW.add(tempMultDiv);
+
+        do tempW.add(m.get(3, 3));
+
+        return resultVec.setFloatW(tempX, tempY, tempZ, tempW);
     }
 
     /*
      * Multiplies with matrix m and returns itself.
      */
     method Matrix44 mult(Matrix44 m) {
-        Matrix44 result = Matrix44.zero();
+        var int i, j, k;
+        var Float refFloat;
 
-        for (int i = 0; i < 4; ++i) {
-            for (int j = 0; j < 4; ++j) {
-                for (int k = 0; k < 4; ++k) {
-                    result.matrix[i][j] += matrix[i][k] * m.matrix[k][j];
+        do resultMat.copy(Matrix44.zero());
+
+        let i = 0;
+        while(i < 4) {
+            let j = 0;
+            while(j < 4) {
+                let k = 0;
+                while(k < 4) {
+                    let refFloat = resultMat.get(i, j);
+                    do tempMultDiv.set(get(i, k));
+                    do tempMultDiv.mult(m.get(k, j));
+                    do refFloat.add(tempMultDiv);
+                    let k = k + 1;
                 }
+
+                let j = j + 1;
             }
+
+            let i = i + 1;
         }
 
         return this;
@@ -158,12 +252,14 @@ class Matrix44 {
      */
     method Matrix44 multInt(int n) {
         var int i, j;
+        var Float refFloat;
 
         let i = 0;
         while(i < 4) {
             let j = 0;
             while(j < 4) {
-                do get(i, j).multInt(n);
+                let refFloat = get(i, j);
+                do refFloat.multInt(n);
                 let j = j + 1;
             }
 
@@ -178,12 +274,14 @@ class Matrix44 {
      */
     method Matrix44 multFloat(Float n) {
         var int i, j;
+        var Float refFloat;
 
         let i = 0;
         while(i < 4) {
             let j = 0;
             while(j < 4) {
-                do get(i, j).mult(n);
+                let refFloat = get(i, j);
+                do refFloat.mult(n);
                 let j = j + 1;
             }
 
@@ -198,9 +296,9 @@ class Matrix44 {
      */
     function Matrix44 translateInt(int dx, int dy, int dz) {
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(0, 3).setInt(dx);
-        do resultMat.get(1, 3).setInt(dy);
-        do resultMat.get(2, 3).setInt(dz);
+        do resultMat.setInt(0, 3, dx);
+        do resultMat.setInt(1, 3, dy);
+        do resultMat.setInt(2, 3, dz);
         return resultMat;
     }
 
@@ -209,9 +307,9 @@ class Matrix44 {
      */
     function Matrix44 translate(Float dx, Float dy, Float dz) {
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(0, 3).set(dx);
-        do resultMat.get(1, 3).set(dy);
-        do resultMat.get(2, 3).set(dz);
+        do resultMat.set(0, 3, dx);
+        do resultMat.set(1, 3, dy);
+        do resultMat.set(2, 3, dz);
         return resultMat;
     }
 
@@ -220,9 +318,9 @@ class Matrix44 {
      */
     function Matrix44 scaleInt(int sx, int sy, int sz) {
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(0, 0).setInt(sx);
-        do resultMat.get(1, 1).setInt(sy);
-        do resultMat.get(2, 2).setInt(sz);
+        do resultMat.setInt(0, 0, sx);
+        do resultMat.setInt(1, 1, sy);
+        do resultMat.setInt(2, 2, sz);
         return resultMat;
     }
 
@@ -231,9 +329,9 @@ class Matrix44 {
      */
     function Matrix44 scale(Float sx, Float sy, Float sz) {
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(0, 0).set(sx);
-        do resultMat.get(1, 1).set(sy);
-        do resultMat.get(2, 2).set(sz);
+        do resultMat.set(0, 0, sx);
+        do resultMat.set(1, 1, sy);
+        do resultMat.set(2, 2, sz);
         return resultMat;
     }
 
@@ -241,11 +339,17 @@ class Matrix44 {
      * Rotation matrix.
      */
     function Matrix44 rotateX(Float dtheta) {
+        var Float refFloat;
+
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(1, 1).set(Trig.cos(dtheta));
-        do resultMat.get(1, 2).set(Trig.lastSin()).neg();
-        do resultMat.get(2, 1).set(Trig.lastSin());
-        do resultMat.get(2, 2).set(Trig.lastCos());
+        do resultMat.set(1, 1, Trig.cos(dtheta));
+
+        let refFloat = resultMat.get(1, 2);
+        do temFloat.set(Trig.lastSin());
+        do refFloat.neg();
+
+        do resultMat.set(2, 1, Trig.lastSin());
+        do resultMat.set(2, 2, Trig.lastCos());
         return resultMat;
     }
 
@@ -253,11 +357,14 @@ class Matrix44 {
      * Rotation matrix.
      */
     function Matrix44 rotateXDegrees(int dtheta) {
+        var Float refFloat;
+
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(1, 1).set(Trig.cos(Trig.rad(tempRads.setInt(dtheta))));
-        do resultMat.get(1, 2).set(Trig.lastSin()).neg();
-        do resultMat.get(2, 1).set(Trig.lastSin());
-        do resultMat.get(2, 2).set(Trig.lastCos());
+        do resultMat.set(1, 1, Trig.cos(Trig.rad(tempRads.setInt(dtheta))));
+        let refFloat = resultMat.set(1, 2, Trig.lastSin());
+        do refFloat.neg();
+        do resultMat.set(2, 1, Trig.lastSin());
+        do resultMat.set(2, 2, Trig.lastCos());
         return resultMat;
     }
 
@@ -265,11 +372,17 @@ class Matrix44 {
      * Rotation matrix.
      */
     function Matrix44 rotateY(Float dtheta) {
+        var Float refFloat;
+
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(0, 0).set(Trig.cos(dtheta));
-        do resultMat.get(0, 2).set(Trig.lastSin());
-        do resultMat.get(2, 0).set(Trig.lastSin()).neg();
-        do resultMat.get(2, 2).set(Trig.lastCos());
+        do resultMat.set(0, 0, Trig.cos(dtheta));
+        do resultMat.set(0, 2, Trig.lastSin());
+
+        let refFloat = resultMat.get(2, 0);
+        do refFloat.set(Trig.lastSin());
+        do refFloat.neg();
+
+        do resultMat.set(2, 2, Trig.lastCos());
         return resultMat;
     }
 
@@ -277,11 +390,17 @@ class Matrix44 {
      * Rotation matrix.
      */
     function Matrix44 rotateYDegrees(int dtheta) {
+        var Float refFloat;
+
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(0, 0).set(Trig.cos(Trig.rad(tempRads.setInt(dtheta))));
-        do resultMat.get(0, 2).set(Trig.lastSin());
-        do resultMat.get(2, 0).set(Trig.lastSin()).neg();
-        do resultMat.get(2, 2).set(Trig.lastCos());
+        do resultMat.set(0, 0, Trig.cos(Trig.rad(tempRads.setInt(dtheta))));
+        do resultMat.set(0, 2, Trig.lastSin());
+
+        let refFloat = resultMat.get(2, 0);
+        do refFloat.set(Trig.lastSin());
+        do refFloat.neg();
+
+        do resultMat.set(2, 2, Trig.lastCos());
         return resultMat;
     }
 
@@ -289,11 +408,17 @@ class Matrix44 {
      * Rotation matrix.
      */
     function Matrix44 rotateZ(Float dtheta) {
+        var Float refFloat;
+
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(0, 0).set(Trig.cos(dtheta));
-        do resultMat.get(0, 1).set(Trig.lastSin()).neg();
-        do resultMat.get(1, 0).set(Trig.lastSin());
-        do resultMat.get(1, 1).set(Trig.lastCos());
+        do resultMat.set(0, 0, Trig.cos(dtheta));
+
+        let refFloat = resultMat.get(0, 1);
+        do refFloat.set(Trig.lastSin());
+        do refFloat.neg();
+
+        do resultMat.set(1, 0, Trig.lastSin());
+        do resultMat.set(1, 1, Trig.lastCos());
         return resultMat;
     }
 
@@ -301,11 +426,17 @@ class Matrix44 {
      * Rotation matrix.
      */
     function Matrix44 rotateZDegrees(int dtheta) {
+        var Float refFloat;
+
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(0, 0).set(Trig.cos(Trig.rad(tempRads.setInt(dtheta))));
-        do resultMat.get(0, 1).set(Trig.lastSin()).neg();
-        do resultMat.get(1, 0).set(Trig.lastSin());
-        do resultMat.get(1, 1).set(Trig.lastCos());
+        do resultMat.set(0, 0, Trig.cos(Trig.rad(tempRads.setInt(dtheta))));
+
+        let refFloat = resultMat.get(0, 1);
+        do refFloat.set(Trig.lastSin());
+        do refFloat.neg();
+
+        do resultMat.set(1, 0, Trig.lastSin());
+        do resultMat.set(1, 1, Trig.lastCos());
         return resultMat;
     }
 
@@ -313,9 +444,15 @@ class Matrix44 {
      * Perspective matrix.
      */
     function Matrix44 perspectiveInt(int d) {
+        var Float refFloat;
+
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(3, 3).setInt(0);
-        do resultMat.get(3, 2).setInt(1).divInt(d);
+        do resultMat.setInt(3, 3, 0);
+        
+        let refFloat = resultMat.get(3, 2);
+        do refFloat.setInt(1);
+        do refFloat.divInt(d);
+
         return resultMat;
     }
 
@@ -323,9 +460,15 @@ class Matrix44 {
      * Perspective matrix.
      */
     function Matrix44 perspective(Float d) {
+        var Float refFloat;
+
         do resultMat.copy(Matrix44.identity());
-        do resultMat.get(3, 3).setInt(0);
-        do resultMat.get(3, 2).setInt(1).div(d);
+        do resultMat.setInt(3, 3, 0);
+        
+        let refFloat = resultMat.get(3, 2);
+        do refFloat.setInt(1);
+        do refFloat.div(d);
+        
         return resultMat;
     }
 
@@ -333,18 +476,45 @@ class Matrix44 {
      * Look at matrix.
      */
     function Matrix44 lookAt(Vector3 from, Vector3 to, Vector3 orientation) {
-        Vector3 n = from.plus(to.times(-1)).normalized();
-        Vector3 u = orientation.cross(n).normalized();
-        Vector3 v = n.cross(u);
+        do tempVec.copy(to);
+        do tempVec.neg();
 
-        double matrix[][] = {
-            {u.x, u.y, u.z, -u.dot(from)},
-            {v.x, v.y, v.z, -v.dot(from)},
-            {n.x, n.y, n.z, -n.dot(from)},
-            {0, 0, 0, 1}
-        };
+        do n.copy(from);
+        do n.add(tempVec);
+        do n.normalize();
 
-        return new Matrix44(matrix);
+        do u.copy(Vector3.cross(orientation, n));
+        do u.normalize();
+
+        do v.copy(Vector3.cross(n, u));
+
+        do resultMat.copy(Matrix44.identity());
+
+        do resultMat.set(0, 0, u.getX());
+        do resultMat.set(0, 1, u.getY());
+        do resultMat.set(0, 2, u.getZ());
+
+        do resultMat.set(1, 0, v.getX());
+        do resultMat.set(1, 1, v.getY());
+        do resultMat.set(1, 2, v.getZ());
+
+        do resultMat.set(2, 0, n.getX());
+        do resultMat.set(2, 1, n.getY());
+        do resultMat.set(2, 2, n.getZ());
+
+        do tempVec.copy(Vector3.dot(u, from));
+        do tempVec.neg();
+        do resultMat.set(3, 0, tempVec);
+
+        do tempVec.copy(Vector3.dot(v, from));
+        do tempVec.neg();
+        do resultMat.set(3, 1, tempVec);
+
+        do tempVec.copy(Vector3.dot(n, from));
+        do tempVec.neg();
+        do resultMat.set(3, 2, tempVec);
+
+        return resultMat;
     }
 
     /*
@@ -352,7 +522,7 @@ class Matrix44 {
      */
     method String toString() {
         var String str, tempString;
-        var Float tempFloat;
+        var Float refFloat;
         var int i, j;
 
         let str = String.new(246); /* (14 * 4 + 3 + 2) * 4 + 2 */
@@ -364,8 +534,8 @@ class Matrix44 {
             
             let j = 0;
             while(j < 4) {
-                let tempFloat = (matrix[i])[j];
-                let tempString = tempFloat.toString(4);
+                let refFloat = get(i, j);
+                let tempString = refFloat.toString(4);
                 do Util.appendString(str, tempString);
                 do tempString.dispose();
 
@@ -391,6 +561,20 @@ class Matrix44 {
         let s = toString();
         do Output.printString(s);
         do s.dispose();
+        return;
+    }
+
+    method void dispose() {
+        var int i;
+
+        let i = 0;
+        while(i < 16) {
+            do Memory.deAlloc(matrix[i]);
+            let i = i + 1;
+        }
+
+        do Memory.deAlloc(matrix);
+        do Memory.deAlloc(this);
         return;
     }
 }

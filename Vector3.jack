@@ -180,7 +180,7 @@ class Vector3 {
     /*
      * Multiplies this vector with an int n and returns itself.
      */
-    method Vector3 multiplyInt(int n) {
+    method Vector3 multInt(int n) {
         do y.multInt(n);
         do x.multInt(n);
         do z.multInt(n);
@@ -188,9 +188,17 @@ class Vector3 {
     }
 
     /*
+     * Negates this vector.
+     */
+    method Vector3 neg() {
+        do multInt(-1);
+        return this;
+    }
+
+    /*
      * Multiplies this vector with a Float n and returns itself.
      */
-    method Vector3 multiply(Float n) {
+    method Vector3 mult(Float n) {
         do y.mult(n);
         do x.mult(n);
         do z.mult(n);
@@ -316,5 +324,6 @@ class Vector3 {
         do Memory.deAlloc(y);
         do Memory.deAlloc(z);
         do Memory.deAlloc(this);
+        return;
     }
 }
