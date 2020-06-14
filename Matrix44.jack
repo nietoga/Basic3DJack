@@ -375,8 +375,11 @@ class Matrix44 {
 
         do resultMat.copy(Matrix44.identity());
         do resultMat.set(1, 1, Trig.cos(Trig.rad(tempRads.setInt(dtheta))));
-        let refFloat = resultMat.set(1, 2, Trig.lastSin());
+
+        let refFloat = resultMat.get(1, 2);
+        do refFloat.set(Trig.lastSin());
         do refFloat.neg();
+
         do resultMat.set(2, 1, Trig.lastSin());
         do resultMat.set(2, 2, Trig.lastCos());
         return resultMat;

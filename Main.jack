@@ -7,7 +7,8 @@ class Main
 		do Vector3.init();
 		do Matrix44.init();
 		//do Main.testVecs();
-		do Main.testMats();
+		//do Main.testMats();
+		do Main.transTests();
 		return;
 	}
 
@@ -54,6 +55,34 @@ class Main
 		do mat2.multInt(2);
 		do mat2.print();
 		do Output.println();
+		return;
+	}
+
+	function void transTests() {
+		var Vector3 v1, v2;
+		var Matrix44 m1, m2;
+
+		let v1 = Vector3.new();
+		let m1 = Matrix44.new();
+
+		do m1.copy(Matrix44.translateInt(1, -1, 1));
+		do v1.setInt(-1, 1, -1);
+		let v2 = Matrix44.times(m1, v1);
+		do v2.print();
+		do Output.println();
+
+		do v1.setInt(-1, 1, -1);
+		do m1.copy(Matrix44.scaleInt(2, 3, 4));
+		let v2 = Matrix44.times(m1, v1);
+		do v2.print();
+		do Output.println();		
+		
+		do m1.copy(Matrix44.rotateXDegrees(90));
+		do v1.setInt(1, 1, 1);
+		let v2 = Matrix44.times(m1, v1);
+		do v2.print();
+		do Output.println();
+
 		return;
 	}
 }
