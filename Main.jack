@@ -6,6 +6,51 @@ class Main
 		do Trig.init();
 		do Vector3.init();
 		do Matrix44.init();
+		//do Main.testVecs();
+		do Main.testMats();
+		return;
+	}
+
+	function void testVecs() {
+		var Vector3 v1, v2;
+		let v1 = Vector3.new();
+		do v1.print();
+		do Output.println();
+		let v2 = Vector3.new();
+		do v2.setIntW(1, 2, 3, 2);
+		do v2.print();
+		do Output.println();
+		do v1.dispose();
+		do v2.dispose();
+		return;
+	}
+
+	function void testMats() {
+		var Matrix44 mat1, mat2;
+
+		let mat1 = Matrix44.new();
+		do mat1.print();
+		do Output.println();
+
+		do mat1.copy(Matrix44.identity());
+		do mat1.print();
+		do Output.println();
+
+		do mat1.copy(Matrix44.scaleInt(1, 2, 3));
+		do mat1.print();
+		do Output.println();
+
+		do mat1.copy(Matrix44.translateInt(1, 2, 3));
+		do mat1.print();
+		do Output.println();
+
+		let mat2 = Matrix44.new();
+		do mat2.copy(Matrix44.scaleInt(1, 2, 3));
+
+		do mat1.mult(mat2);
+		do mat1.print();
+		do Output.println();
+
 		return;
 	}
 }

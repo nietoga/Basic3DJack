@@ -251,6 +251,7 @@ class Matrix44 {
             let i = i + 1;
         }
 
+        do copy(resultMat);
         return this;
     }
 
@@ -545,7 +546,7 @@ class Matrix44 {
         var Float refFloat;
         var int i, j;
 
-        let str = String.new(246); /* (14 * 4 + 3 + 2) * 4 + 2 */
+        let str = String.new(249); /* (14 * 4 + 3 + 2) * 4 + 3 + 2 */
         do str.appendChar(40); /* ( */
 
         let i = 0;
@@ -567,6 +568,12 @@ class Matrix44 {
             }
 
             do str.appendChar(41); /* ) */
+
+            if(i < 3) {
+                do str.appendChar(44); /* , */
+            }
+
+            let i = i + 1;
         }
 
         do str.appendChar(41); /* ) */
