@@ -598,10 +598,12 @@ class Matrix44 {
 
     method void dispose() {
         var int i;
+        var Float refFloat;
 
         let i = 0;
         while(i < 16) {
-            do Memory.deAlloc(matrix[i]);
+            let refFloat = matrix[i];
+            do Memory.deAlloc(refFloat);
             let i = i + 1;
         }
 
