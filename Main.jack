@@ -1,0 +1,11 @@
+class Main 
+{
+	function void main()
+	{
+		do Float.init();
+		do Trig.init();
+		do Vector3.init();
+		do Matrix44.init();
+		return;
+	}
+}
