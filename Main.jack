@@ -83,6 +83,9 @@ class Main
 		do v2.print();
 		do Output.println();
 
+		do m1.copy(Matrix44.lookAt(Vector3.zeroVec(), Vector3.zVec(), Vector3.yVec()));
+		do m1.print();
+		do Output.println();
 		return;
 	}
 }
