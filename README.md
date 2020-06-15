@@ -6,7 +6,7 @@ I used the library for Floating point arithmetic and trigonometric functions dev
 
 # Classes
 
-* Main.jack: It draws a "boat" on the screen wich you can rotate using A S D W but please let the keys pressed, since it's really slow, it wont read your keys in maybe 4-5 seconds.
+* Main.jack: It draws a "boat" on the screen wich you can rotate using A S D W.
 * Vector3.jack: It's a class for representing tridimensional vectors.
 * Matrix44.jack: It's a class for representing 4x4 matrices and generating default transformation matrices used in computer graphics.
 * Util.jack: It's a simple utility class.
