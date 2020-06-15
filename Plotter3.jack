@@ -1,13 +1,24 @@
+/*
+ * Plotter3 class.
+ * Used for drawing meshes on the screen.
+ */
 class Plotter3 {
+    /* Height and width of the screen. */
     static int h, w;
 
+    /* Camera values. */
     static Vector3 cameraPosition;
     static Vector3 cameraOrientation;
     static Vector3 cameraLookTo;
     static Float d;
 
+    /* Matrix used for transformations. */
     static Matrix44 t;
 
+    /*
+     * Initializes this class.
+     * WARNING: It assumes Vector3 and Matrix44 are initialized.
+     */
     function void init() {
         let h = 256;
         let w = 512;
@@ -19,31 +30,51 @@ class Plotter3 {
         return;
     }
 
+    /*
+     * Sets the value d, used for projection.
+     */
     function void setCameraPosition(Vector3 newCameraPosition) {
         do cameraPosition.copy(newCameraPosition);
         return;
     }
 
+    /*
+     * Sets the value d, used for projection.
+     */
     function void setCameraOrientation(Vector3 newCameraOrientation) {
         do cameraOrientation.copy(newCameraOrientation);
         return;
     }
 
+    /*
+     * Sets the value d, used for projection.
+     */
     function void setCameraLookTo(Vector3 newCameraLookTo) {
         do cameraLookTo.copy(newCameraLookTo);
         return;
     }
 
+    /*
+     * Sets the value d, used for projection.
+     */
     function void setD(Float newD) {
         do d.set(newD);
         return;
     }
 
+    /*
+     * Sets the value d, used for projection.
+     */
     function void setDInt(int newD) {
         do d.setInt(newD);
         return;
     }
 
+    /*
+     * Draws the given mesh into the screen.
+     * WARNING: If with the given configuration any point is out of the screen, it will make the program halt,
+     * since it uses the drawLine OS's function.
+     */
     function void draw(int nPoints, Array points, int nConns, Array connsFrom, Array connsTo) {
         var Array tempPoints;
         var Vector3 refVector;
@@ -85,18 +116,30 @@ class Plotter3 {
         return;
     }
 
+    /*
+     * Translate an x position centered in the middle of the screen into a pixel.
+     */
     function int _toPixelXInt(int x) {
         return (w / 2) + x;
     }
 
+    /*
+     * Translate an x position centered in the middle of the screen into a pixel.
+     */
     function int _toPixelXFloat(Float x) {
         return Plotter3._toPixelXInt(x._floor());
     }
 
+    /*
+     * Translate a y position centered in the middle of the screen into a pixel.
+     */
     function int _toPixelYInt(int y) {
         return (h / 2) - y;
     }
 
+    /*
+     * Translate a y position centered in the middle of the screen into a pixel.
+     */
     function int _toPixelYFloat(Float y) {
         return Plotter3._toPixelYInt(y._floor());
     }

@@ -1,5 +1,6 @@
 /*
  * Vector3 class.
+ * It holds the values (x, y, z)
  */
 class Vector3 {
     /* Fields */

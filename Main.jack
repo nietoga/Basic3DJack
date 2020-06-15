@@ -1,5 +1,11 @@
+/*
+ * Main class. It's an example of how the classes may be used.
+ */
 class Main 
 {
+	/*
+	 * Main function.
+	 */
 	function void main()
 	{
 		do Float.init();
@@ -11,6 +17,12 @@ class Main
 		return;
 	}
 
+	/*
+	 * Draws a simple boat to demonstrate the functionality.
+	 * With Q you quit the program.
+	 * With A and D you rotate it around the Y axis.
+	 * With S and W you rotate it around the X axis.
+	 */
 	function void drawBoat() {
 		var int nPoints, nConns;
 		var Array points;
@@ -31,6 +43,7 @@ class Main
 		let transMat = Matrix44.new();
 		let negCenter = Vector3.new();
 
+		/* Just creating the data. I know where the boat is and where to place the camera ... */
 		let nPoints = 9;
 		let points = Array.new(nPoints);
 
@@ -81,7 +94,6 @@ class Main
 		let connsTo[6] = 7;
 		let connsTo[7] = 8;
 
-
 		let camPosition = Vector3.new();
 		do camPosition.setInt(100, 250, 0);
 		let center = Vector3.new();
@@ -98,11 +110,21 @@ class Main
 		do negCenter.copy(center);
 		do negCenter.neg();
 
+		/* Loop */
 		let key = -1;
 		while(~(key = 81)) { /* Q */
 			let key = Keyboard.keyPressed();
 			do transMat.copy(Matrix44.identity());
 
+			/*
+			 * Notice if you want to compose transformation A and transformation B you should do B x A and
+			 * not A x B, since the library works this way: B x (A x v). The rightmost transformation is the first one.
+		     * 
+			 * In-place transformations are achieved doing the next movements:
+			 * v = v - center
+			 * transform(v)
+			 * v = v + center
+			 */
 			if(key = 65) { /* A */
 				do transMat.copy(Matrix44.translate(center.getX(), center.getY(), center.getZ()));
 				do transMat.mult(Matrix44.rotateYDegrees(-10));
@@ -127,6 +149,7 @@ class Main
 				do transMat.mult(Matrix44.translate(negCenter.getX(), negCenter.getY(), negCenter.getZ()));			
 			}
 
+			/* Aplying transformation to all points */
 			let i = 0;
 			while(i < nPoints) {
 				let refVector = points[i];
@@ -134,9 +157,12 @@ class Main
 				let i = i + 1;
 			}
 
+			/* Displaying on screen. Calling clearScreen creates a tiling effect */
 			do Screen.clearScreen();
 			do Plotter3.draw(nPoints, points, nConns, connsFrom, connsTo);
 		}
+
+		/* Cleanup */
 
 		let i = 0;
 		while(i < nPoints) {

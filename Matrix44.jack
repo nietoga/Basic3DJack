@@ -1,5 +1,7 @@
 /*
  * Matrix44 class.
+ * It's used for transformations over Vector3s
+ * Remember composition of transformations A and B should be made multiplying B x A, NOT A x B
  */
 class Matrix44 {
     /* Fields; this is a matrix of 16 floats. */
@@ -260,7 +262,7 @@ class Matrix44 {
     }
 
     /*
-     * Multiplies all the elements of this matrix by n.
+     * Multiplies all the elements of this matrix by n and returns itself.
      */
     method Matrix44 multInt(int n) {
         var int i, j;
@@ -282,7 +284,7 @@ class Matrix44 {
     }
 
     /*
-     * Multiplies all the elements of this matrix by n.
+     * Multiplies all the elements of this matrix by n and returns itself.
      */
     method Matrix44 multFloat(Float n) {
         var int i, j;
@@ -304,7 +306,7 @@ class Matrix44 {
     }
 
     /*
-     * Translation matrix.
+     * Translation matrix, it translates dx in x, dy in y and dz in z.
      * WARNING: Global variable returned.
      */
     function Matrix44 translateInt(int dx, int dy, int dz) {
@@ -316,7 +318,7 @@ class Matrix44 {
     }
 
     /*
-     * Translation matrix.
+     * Translation matrix, it translates dx in x, dy in y and dz in z.
      * WARNING: Global variable returned.
      */
     function Matrix44 translate(Float dx, Float dy, Float dz) {
@@ -328,7 +330,7 @@ class Matrix44 {
     }
 
     /*
-     * Scaling matrix.
+     * Scaling matrix, it scales by sx in x, sy in y and sz in z.
      * WARNING: Global variable returned.
      */
     function Matrix44 scaleInt(int sx, int sy, int sz) {
@@ -340,7 +342,7 @@ class Matrix44 {
     }
 
     /*
-     * Scaling matrix.
+     * Scaling matrix, it scales by sx in x, sy in y and sz in z.
      * WARNING: Global variable returned.
      */
     function Matrix44 scale(Float sx, Float sy, Float sz) {
@@ -352,7 +354,7 @@ class Matrix44 {
     }
 
     /*
-     * Rotation matrix.
+     * Rotation matrix dtheta radians around X.
      * WARNING: Global variable returned.
      */
     function Matrix44 rotateX(Float dtheta) {
@@ -371,7 +373,7 @@ class Matrix44 {
     }
 
     /*
-     * Rotation matrix.
+     * Rotation matrix dtheta degrees around X.
      * WARNING: Global variable returned.
      */
     function Matrix44 rotateXDegrees(int dtheta) {
@@ -390,7 +392,7 @@ class Matrix44 {
     }
 
     /*
-     * Rotation matrix.
+     * Rotation matrix dtheta radians around Y.
      * WARNING: Global variable returned.
      */
     function Matrix44 rotateY(Float dtheta) {
@@ -409,7 +411,7 @@ class Matrix44 {
     }
 
     /*
-     * Rotation matrix.
+     * Rotation matrix dtheta degrees around Y.
      * WARNING: Global variable returned.
      */
     function Matrix44 rotateYDegrees(int dtheta) {
@@ -428,7 +430,7 @@ class Matrix44 {
     }
 
     /*
-     * Rotation matrix.
+     * Rotation matrix dtheta radians around Z.
      * WARNING: Global variable returned.
      */
     function Matrix44 rotateZ(Float dtheta) {
@@ -447,7 +449,7 @@ class Matrix44 {
     }
 
     /*
-     * Rotation matrix.
+     * Rotation matrix dtheta degrees around Z.
      * WARNING: Global variable returned.
      */
     function Matrix44 rotateZDegrees(int dtheta) {
@@ -483,7 +485,7 @@ class Matrix44 {
     }
 
     /*
-     * Perspective matrix.
+     * Perspective matrix. It's used to create a projection, it's a camera matrix.
      * WARNING: Global variable returned.
      */
     function Matrix44 perspective(Float d) {
@@ -500,7 +502,8 @@ class Matrix44 {
     }
 
     /*
-     * Look at matrix.
+     * Look at matrix. It defines from where does the camera look from.
+     * It should be applied just before a projection matrix, to create a 3d projection.
      * WARNING: Global variable returned.
      */
     function Matrix44 lookAt(Vector3 from, Vector3 to, Vector3 orientation) {
@@ -600,6 +603,9 @@ class Matrix44 {
         return;
     }
 
+    /*
+     * Disposes this matrix.
+     */
     method void dispose() {
         var int i;
         var Float refFloat;
