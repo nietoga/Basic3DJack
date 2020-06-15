@@ -106,11 +106,19 @@ class Main
 		var Array connsFrom;
 		var Array connsTo;
 
-		var Vector3 camPosition, camLookTo, camOrientation;
+		var Vector3 camPosition, center, camOrientation;
 		var int d;
 
 		var int i;
+
 		var Vector3 refVector;
+		var Vector3 negCenter;
+
+		var char key;
+		var Matrix44 transMat;
+
+		let transMat = Matrix44.new();
+		let negCenter = Vector3.new();
 
 		let nPoints = 9;
 		let points = Array.new(nPoints);
@@ -165,18 +173,59 @@ class Main
 
 		let camPosition = Vector3.new();
 		do camPosition.setInt(100, 250, 0);
-		let camLookTo = Vector3.new();
-		do camLookTo.setInt(100, 250, -1050);
+		let center = Vector3.new();
+		do center.setInt(100, 250, -1050);
 		let camOrientation = Vector3.new();
 		do camOrientation.copy(Vector3.yVec());
 		let d = -500;
 
 		do Plotter3.setCameraPosition(camPosition);
-		do Plotter3.setCameraLookTo(camLookTo);
+		do Plotter3.setCameraLookTo(center);
 		do Plotter3.setCameraOrientation(camOrientation);
 		do Plotter3.setDInt(d);
 
-		do Plotter3.draw(nPoints, points, nConns, connsFrom, connsTo);
+		do negCenter.copy(center);
+		do negCenter.neg();
+
+		let key = -1;
+		while(~(key = 81)) { /* Q */
+			let key = Keyboard.keyPressed();
+			do transMat.copy(Matrix44.identity());
+
+			if(key = 65) { /* A */
+				do transMat.copy(Matrix44.translate(center.getX(), center.getY(), center.getZ()));
+				do transMat.mult(Matrix44.rotateYDegrees(-10));
+				do transMat.mult(Matrix44.translate(negCenter.getX(), negCenter.getY(), negCenter.getZ()));
+			}
+
+			if(key = 68) { /* D */
+				do transMat.copy(Matrix44.translate(center.getX(), center.getY(), center.getZ()));
+				do transMat.mult(Matrix44.rotateYDegrees(10));
+				do transMat.mult(Matrix44.translate(negCenter.getX(), negCenter.getY(), negCenter.getZ()));			
+			}
+
+			if(key = 83) { /* S */
+				do transMat.copy(Matrix44.translate(center.getX(), center.getY(), center.getZ()));
+				do transMat.mult(Matrix44.rotateXDegrees(10));
+				do transMat.mult(Matrix44.translate(negCenter.getX(), negCenter.getY(), negCenter.getZ()));			
+			}
+
+			if(key = 87) { /* W */
+				do transMat.copy(Matrix44.translate(center.getX(), center.getY(), center.getZ()));
+				do transMat.mult(Matrix44.rotateXDegrees(-10));
+				do transMat.mult(Matrix44.translate(negCenter.getX(), negCenter.getY(), negCenter.getZ()));			
+			}
+
+			let i = 0;
+			while(i < nPoints) {
+				let refVector = points[i];
+				do refVector.copy(Matrix44.times(transMat, refVector));
+				let i = i + 1;
+			}
+
+			do Screen.clearScreen();
+			do Plotter3.draw(nPoints, points, nConns, connsFrom, connsTo);
+		}
 
 		let i = 0;
 		while(i < nPoints) {
@@ -189,8 +238,10 @@ class Main
 		do connsFrom.dispose();
 		do connsTo.dispose();
 		do camPosition.dispose();
-		do camLookTo.dispose();
+		do center.dispose();
 		do camOrientation.dispose();
+		do transMat.dispose();
+		do negCenter.dispose();
 		return;
 	}
 }

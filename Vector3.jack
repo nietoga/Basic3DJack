@@ -181,8 +181,8 @@ class Vector3 {
      * Multiplies this vector with an int n and returns itself.
      */
     method Vector3 multInt(int n) {
-        do y.multInt(n);
         do x.multInt(n);
+        do y.multInt(n);
         do z.multInt(n);
         return this;
     }
@@ -191,7 +191,9 @@ class Vector3 {
      * Negates this vector.
      */
     method Vector3 neg() {
-        do multInt(-1);
+        do x.neg();
+        do y.neg();
+        do z.neg();
         return this;
     }
 
