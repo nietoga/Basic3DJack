@@ -164,11 +164,11 @@ class Main
 
 
 		let camPosition = Vector3.new();
-		do camPosition.setInt(0, 0, 500);
+		do camPosition.setInt(100, 250, 0);
 		let camLookTo = Vector3.new();
-		do camLookTo.setInt(0, 0, 0);
+		do camLookTo.setInt(100, 250, -1050);
 		let camOrientation = Vector3.new();
-		do camOrientation.setInt(0, 1, 0);
+		do camOrientation.copy(Vector3.yVec());
 		let d = -500;
 
 		do Plotter3.setCameraPosition(camPosition);

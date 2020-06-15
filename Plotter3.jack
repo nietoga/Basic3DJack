@@ -61,7 +61,6 @@ class Plotter3 {
 
             let refVector = tempPoints[i];
             do refVector.copy(Matrix44.times(t, points[i]));
-
             let i = i + 1;
         }
 
@@ -99,6 +98,6 @@ class Plotter3 {
     }
 
     function int _toPixelYFloat(Float y) {
-        return Plotter3._toPixelXInt(y._floor());
+        return Plotter3._toPixelYInt(y._floor());
     }
 }
