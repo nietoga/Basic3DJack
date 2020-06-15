@@ -1,0 +1,104 @@
+class Plotter3 {
+    static int h, w;
+
+    static Vector3 cameraPosition;
+    static Vector3 cameraOrientation;
+    static Vector3 cameraLookTo;
+    static Float d;
+
+    static Matrix44 t;
+
+    function void init() {
+        let h = 256;
+        let w = 512;
+        let cameraPosition = Vector3.new();
+        let cameraOrientation = Vector3.new();
+        let cameraLookTo = Vector3.new();
+        let d = Float.new();
+        let t = Matrix44.new();
+        return;
+    }
+
+    function void setCameraPosition(Vector3 newCameraPosition) {
+        do cameraPosition.copy(newCameraPosition);
+        return;
+    }
+
+    function void setCameraOrientation(Vector3 newCameraOrientation) {
+        do cameraOrientation.copy(newCameraOrientation);
+        return;
+    }
+
+    function void setCameraLookTo(Vector3 newCameraLookTo) {
+        do cameraLookTo.copy(newCameraLookTo);
+        return;
+    }
+
+    function void setD(Float newD) {
+        do d.set(newD);
+        return;
+    }
+
+    function void setDInt(int newD) {
+        do d.setInt(newD);
+        return;
+    }
+
+    function void draw(int nPoints, Array points, int nConns, Array connsFrom, Array connsTo) {
+        var Array tempPoints;
+        var Vector3 refVector;
+        var Vector3 refP0, refP1;
+        var int i;
+
+        do t.copy(Matrix44.perspective(d));
+        do t.mult(Matrix44.lookAt(cameraPosition, cameraLookTo, cameraOrientation));
+
+        let tempPoints = Array.new(nPoints);
+
+        let i = 0;
+        while(i < nPoints) {
+            let tempPoints[i] = Vector3.new();
+
+            let refVector = tempPoints[i];
+            do refVector.copy(Matrix44.times(t, points[i]));
+
+            let i = i + 1;
+        }
+
+        let i = 0;
+        while(i < nConns) {
+            let refP0 = tempPoints[connsFrom[i]];
+            let refP1 = tempPoints[connsTo[i]];
+
+            do Screen.drawLine(Plotter3._toPixelXFloat(refP0.getX()), Plotter3._toPixelYFloat(refP0.getY()),
+                               Plotter3._toPixelXFloat(refP1.getX()), Plotter3._toPixelYFloat(refP1.getY()));
+            let i = i + 1;
+        }
+
+        let i = 0;
+        while(i < nPoints) {
+            let refVector = tempPoints[i];
+            do refVector.dispose();
+            let i = i + 1;
+        }
+
+        do tempPoints.dispose();
+        return;
+    }
+
+    function int _toPixelXInt(int x) {
+        return (w / 2) + x;
+    }
+
+    function int _toPixelXFloat(Float x) {
+        return Plotter3._toPixelXInt(x._floor());
+    }
+
+    function int _toPixelYInt(int y) {
+        return (h / 2) - y;
+    }
+
+    function int _toPixelYFloat(Float y) {
+        return Plotter3._toPixelXInt(y._floor());
+    }
+}

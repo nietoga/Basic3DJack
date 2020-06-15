@@ -15,6 +15,8 @@ class Matrix44 {
     static Float tempMultDiv;
     static Float tempRads;
 
+    static Matrix44 transitionMat;
+
     static Float tempX;
     static Float tempY;
     static Float tempZ;
@@ -41,6 +43,8 @@ class Matrix44 {
 
         let tempMultDiv = Float.new();
         let tempRads = Float.new();
+
+        let transitionMat = Matrix44.new();
 
         let tempX = Float.new();
         let tempY = Float.new();
@@ -230,7 +234,7 @@ class Matrix44 {
         var int i, j, k;
         var Float refFloat;
 
-        do resultMat.copy(Matrix44.zero());
+        do transitionMat.copy(Matrix44.zero());
 
         let i = 0;
         while(i < 4) {
@@ -238,7 +242,7 @@ class Matrix44 {
             while(j < 4) {
                 let k = 0;
                 while(k < 4) {
-                    let refFloat = resultMat.get(i, j);
+                    let refFloat = transitionMat.get(i, j);
                     do tempMultDiv.set(get(i, k));
                     do tempMultDiv.mult(m.get(k, j));
                     do refFloat.add(tempMultDiv);
@@ -251,7 +255,7 @@ class Matrix44 {
             let i = i + 1;
         }
 
-        do copy(resultMat);
+        do copy(transitionMat);
         return this;
     }
 
@@ -530,15 +534,15 @@ class Matrix44 {
 
         let refFloat = Vector3.dot(u, from);
         do refFloat.neg();
-        do resultMat.set(3, 0, refFloat);
+        do resultMat.set(0, 3, refFloat);
 
         let refFloat = Vector3.dot(v, from);
         do refFloat.neg();
-        do resultMat.set(3, 1, refFloat);
+        do resultMat.set(1, 3, refFloat);
 
         let refFloat = Vector3.dot(n, from);
         do refFloat.neg();
-        do resultMat.set(3, 2, refFloat);
+        do resultMat.set(2, 3, refFloat);
 
         return resultMat;
     }

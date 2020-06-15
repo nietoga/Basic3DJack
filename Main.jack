@@ -6,23 +6,27 @@ class Main
 		do Trig.init();
 		do Vector3.init();
 		do Matrix44.init();
+		do Plotter3.init();
 		//do Main.testVecs();
 		//do Main.testMats();
-		do Main.transTests();
+		//do Main.transTests();
+		do Main.drawBoat();
 		return;
 	}
 
 	function void testVecs() {
-		var Vector3 v1, v2;
+		var Vector3 v1, refVector;
 		let v1 = Vector3.new();
+		let refVector = Vector3.new();
+
 		do v1.print();
 		do Output.println();
-		let v2 = Vector3.new();
-		do v2.setIntW(1, 2, 3, 2);
-		do v2.print();
+		do refVector.setIntW(1, 2, 3, 2);
+		do refVector.print();
 		do Output.println();
+
 		do v1.dispose();
-		do v2.dispose();
+		do refVector.dispose();
 		return;
 	}
 
@@ -30,6 +34,8 @@ class Main
 		var Matrix44 mat1, mat2;
 
 		let mat1 = Matrix44.new();
+		let mat2 = Matrix44.new();
+
 		do mat1.print();
 		do Output.println();
 
@@ -45,7 +51,6 @@ class Main
 		do mat1.print();
 		do Output.println();
 
-		let mat2 = Matrix44.new();
 		do mat2.copy(Matrix44.scaleInt(1, 2, 3));
 
 		do mat1.mult(mat2);
@@ -55,37 +60,137 @@ class Main
 		do mat2.multInt(2);
 		do mat2.print();
 		do Output.println();
+
+		do mat1.dispose();
+		do mat2.dispose();
 		return;
 	}
 
 	function void transTests() {
-		var Vector3 v1, v2;
-		var Matrix44 m1, m2;
+		var Vector3 v1, refVector;
+		var Matrix44 m1;
 
 		let v1 = Vector3.new();
 		let m1 = Matrix44.new();
 
 		do m1.copy(Matrix44.translateInt(1, -1, 1));
 		do v1.setInt(-1, 1, -1);
-		let v2 = Matrix44.times(m1, v1);
-		do v2.print();
+		let refVector = Matrix44.times(m1, v1);
+		do refVector.print();
 		do Output.println();
 
 		do v1.setInt(-1, 1, -1);
 		do m1.copy(Matrix44.scaleInt(2, 3, 4));
-		let v2 = Matrix44.times(m1, v1);
-		do v2.print();
+		let refVector = Matrix44.times(m1, v1);
+		do refVector.print();
 		do Output.println();		
 		
 		do m1.copy(Matrix44.rotateXDegrees(90));
 		do v1.setInt(1, 1, 1);
-		let v2 = Matrix44.times(m1, v1);
-		do v2.print();
+		let refVector = Matrix44.times(m1, v1);
+		do refVector.print();
 		do Output.println();
 
 		do m1.copy(Matrix44.lookAt(Vector3.zeroVec(), Vector3.zVec(), Vector3.yVec()));
 		do m1.print();
 		do Output.println();
+
+		do v1.dispose();
+		do m1.dispose();
+		return;
+	}
+
+	function void drawBoat() {
+		var int nPoints, nConns;
+		var Array points;
+		var Array connsFrom;
+		var Array connsTo;
+
+		var Vector3 camPosition, camLookTo, camOrientation;
+		var int d;
+
+		var int i;
+		var Vector3 refVector;
+
+		let nPoints = 9;
+		let points = Array.new(nPoints);
+
+		let i = 0;
+		while(i < nPoints) {
+			let points[i] = Vector3.new();
+			let i = i + 1;
+		}
+
+		let refVector = points[0];
+		do refVector.setInt(100, 100, -1000);
+		let refVector = points[1];
+		do refVector.setInt(150, 100, -1050);
+		let refVector = points[2];
+		do refVector.setInt(150, 100, -1100);
+		let refVector = points[3];
+		do refVector.setInt(50, 100, -1100);
+		let refVector = points[4];
+		do refVector.setInt(50, 100, -1050);
+		let refVector = points[5];
+		do refVector.setInt(100, 100, -1050);
+		let refVector = points[6];
+		do refVector.setInt(100, 400, -1050);
+		let refVector = points[7];
+		do refVector.setInt(100, 200, -1100);
+		let refVector = points[8];
+		do refVector.setInt(100, 200, -1050);
+
+		let nConns = 8;
+
+		let connsFrom = Array.new(nConns);
+		let connsTo = Array.new(nConns);
+
+		let connsFrom[0] = 0;
+		let connsFrom[1] = 1;
+		let connsFrom[2] = 2;
+		let connsFrom[3] = 3;
+		let connsFrom[4] = 4;
+		let connsFrom[5] = 5;
+		let connsFrom[6] = 6;
+		let connsFrom[7] = 7;
+		let connsTo[0] = 1;
+		let connsTo[1] = 2;
+		let connsTo[2] = 3;
+		let connsTo[3] = 4;
+		let connsTo[4] = 0;
+		let connsTo[5] = 6;
+		let connsTo[6] = 7;
+		let connsTo[7] = 8;
+
+
+		let camPosition = Vector3.new();
+		do camPosition.setInt(0, 0, 500);
+		let camLookTo = Vector3.new();
+		do camLookTo.setInt(0, 0, 0);
+		let camOrientation = Vector3.new();
+		do camOrientation.setInt(0, 1, 0);
+		let d = -500;
+
+		do Plotter3.setCameraPosition(camPosition);
+		do Plotter3.setCameraLookTo(camLookTo);
+		do Plotter3.setCameraOrientation(camOrientation);
+		do Plotter3.setDInt(d);
+
+		do Plotter3.draw(nPoints, points, nConns, connsFrom, connsTo);
+
+		let i = 0;
+		while(i < nPoints) {
+			let refVector = points[i];
+			do refVector.dispose();
+			let i = i + 1;
+		}
+
+		do points.dispose();
+		do connsFrom.dispose();
+		do connsTo.dispose();
+		do camPosition.dispose();
+		do camLookTo.dispose();
+		do camOrientation.dispose();
 		return;
 	}
 }
