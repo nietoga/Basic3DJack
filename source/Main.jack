@@ -40,6 +40,9 @@ class Main
 		var char key;
 		var Matrix44 transMat;
 
+		var String repl;
+		let repl = "What's next? (A(angY-30) S(angX-30) D(angY+30) W(angX+30) Q): ";
+
 		let transMat = Matrix44.new();
 		let negCenter = Vector3.new();
 
@@ -113,7 +116,6 @@ class Main
 		/* Loop */
 		let key = -1;
 		while(~(key = 81)) { /* Q */
-			let key = Keyboard.keyPressed();
 			do transMat.copy(Matrix44.identity());
 
 			/*
@@ -127,25 +129,25 @@ class Main
 			 */
 			if(key = 65) { /* A */
 				do transMat.copy(Matrix44.translate(center.getX(), center.getY(), center.getZ()));
-				do transMat.mult(Matrix44.rotateYDegrees(-10));
+				do transMat.mult(Matrix44.rotateYDegrees(-30));
 				do transMat.mult(Matrix44.translate(negCenter.getX(), negCenter.getY(), negCenter.getZ()));
 			}
 
 			if(key = 68) { /* D */
 				do transMat.copy(Matrix44.translate(center.getX(), center.getY(), center.getZ()));
-				do transMat.mult(Matrix44.rotateYDegrees(10));
+				do transMat.mult(Matrix44.rotateYDegrees(30));
 				do transMat.mult(Matrix44.translate(negCenter.getX(), negCenter.getY(), negCenter.getZ()));			
 			}
 
 			if(key = 83) { /* S */
 				do transMat.copy(Matrix44.translate(center.getX(), center.getY(), center.getZ()));
-				do transMat.mult(Matrix44.rotateXDegrees(10));
+				do transMat.mult(Matrix44.rotateXDegrees(30));
 				do transMat.mult(Matrix44.translate(negCenter.getX(), negCenter.getY(), negCenter.getZ()));			
 			}
 
 			if(key = 87) { /* W */
 				do transMat.copy(Matrix44.translate(center.getX(), center.getY(), center.getZ()));
-				do transMat.mult(Matrix44.rotateXDegrees(-10));
+				do transMat.mult(Matrix44.rotateXDegrees(-30));
 				do transMat.mult(Matrix44.translate(negCenter.getX(), negCenter.getY(), negCenter.getZ()));			
 			}
 
@@ -160,6 +162,9 @@ class Main
 			/* Displaying on screen. Calling clearScreen creates a tiling effect */
 			do Screen.clearScreen();
 			do Plotter3.draw(nPoints, points, nConns, connsFrom, connsTo);
+			do Output.moveCursor(0, 0);
+			do Output.printString(repl);
+			let key = Keyboard.readChar();
 		}
 
 		/* Cleanup */
@@ -179,6 +184,7 @@ class Main
 		do camOrientation.dispose();
 		do transMat.dispose();
 		do negCenter.dispose();
+		do repl.dispose();
 		return;
 	}
 }
