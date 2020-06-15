@@ -1,6 +1,6 @@
 # Basic 3D in Jack (It's damn slow...)
 
-Ok, so... I developed a simple 3D engine for the platform we use in the Nand2tetris course, but it's awful to look at during runtime...
+Ok, so... I developed a simple 3D engine for the platform we use in the Nand2tetris course.
 
 I used the library for Floating point arithmetic and trigonometric functions developed by Mark Armbrust, I'm really grateful to him.
 
