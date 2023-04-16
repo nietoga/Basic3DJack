@@ -11,3 +11,6 @@ I used the library for Floating point arithmetic and trigonometric functions dev
 * Matrix44.jack: It's a class for representing 4x4 matrices and generating default transformation matrices used in computer graphics.
 * Plotter3.jack: It's a class developed in order to simplify the drawing of the meshes.
 * Util.jack: It's a simple utility class.
+
+# Demo
+![Demo](./media/demo.gif)
